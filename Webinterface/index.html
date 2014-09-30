@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>LedTemp Device Client</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/>
+    <script type="text/javascript" src="scripts/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="scripts/devicehive.js"></script>
+    <script type="text/javascript" src="scripts/application.js"></script>
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var deviceHive = new DeviceHive("http://nn6156.pg.devicehive.com/api", "admin", "billgates");
+            app.start(deviceHive, "9f33566e-1f8f-11e2-8979-c42c030dd6a5");
+        });
+     </script>
+</head>
+<body>
+    
+    <div class="container">
+    <div class="device-info-holder">
+        <h4>Device information:</h4>
+        <table class="fields-table">
+            <tr>
+                <td class="title-column">Name:</td>
+                <td><span class="device-name"></span></td>
+            </tr>
+            <tr>
+                <td class="title-column">Status:</td>
+                <td><span class="device-status"></span></td>
+            </tr>
+            <tr>
+                <td class="title-column">Channel State:</td>
+                <td><span class="channel-state"></span></td>
+            </tr>
+            <tr>
+                <td class="title-column">Temperature:</td>
+                <td><span class="device-temperature"></span></td>
+            </tr>
+            <tr>
+                <td class="title-column">Fan State:</td>
+                <td><div class="device-FAN-state"></div></td>
+            </tr>
+            <tr>
+                <td class="title-column">Maximum temperature:</td>
+				
+				<td>
+  <form>
+    <input name="n" class="maxv" type="number" min="0" max="50" step="1" value="22">
+    <input type="button" class="sendtemp maxtemp" value="Set">
+  </form>
+				</td>
+				
+            </tr>
+			<tr>
+                <td class="title-column">Minimum temperature:</td>
+				
+				<td>
+  <form>
+    <input name="n" class="minv" type="number" min="-100" max="100" step="1" value="5">
+    <input type="button" class="sendtemp mintemp" value="Set">
+  </form>
+				</td>
+			</tr>
+			<tr>
+                <td class="title-column">Fan Control:</td>
+			                <td>
+                    <a class="button send on" href="javascript:void(0)">On</a>
+                    <a class="button send off" href="javascript:void(0)">Off</a>
+                </td>
+			</tr>	
+        </table>
+    </div>
+
+    </div>
+</body>
+</html>
