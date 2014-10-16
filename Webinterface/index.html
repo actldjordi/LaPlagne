@@ -1,77 +1,251 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>LedTemp Device Client</title>
+    <title>Temperature control Devices Client</title>
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/>
     <script type="text/javascript" src="scripts/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="scripts/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="scripts/dataTables.jqueryui.js"></script>
+    
     <script type="text/javascript" src="scripts/devicehive.js"></script>
     <script type="text/javascript" src="scripts/application.js"></script>
+
+    <script type="text/javascript" src="scripts/tinybox.js"></script>
+    <script type="text/javascript" src="scripts/login-form.js"></script>
+    
+
+    <script src="scripts/jquery-ui.js"></script>
+    <script src="scripts/slider.js"></script>
+    <script src="scripts/pwr-btn.js"></script>
+    <link href="css/style-g.css" rel="stylesheet" type="text/css" />
+    
+    <link rel="stylesheet" href="css/login-form.css" media="screen">
+    <link rel="stylesheet" href="css/style-box.css" />
     <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="css/jquery.dataTables_themeroller.css" rel="stylesheet" type="text/css" />
+    <link href="css/dataTables.jqueryui.css" rel="stylesheet" type="text/css" />
+    
+
+    
     
     <script type="text/javascript">
+            
+    /* Formatting function for row details - modify as you need */
+function format ( d ) {
+//alert(d[2]);
+//app.start(deviceHive, "9f33566e-1f8f-11e2-8979-c42c030dd6a5");
+    // `d` is the original data object for the row
+    
+    /*TINY.box.show({html:*/ return '<div class="device-info-holder">'+
+        '<h4>Device information:</h4>'+
+        '<table class="fields-table">'+
+        '<tr>'+
+        '        <td class="title-column">Name:</td>'+
+        '       <td><span class="device-name">dev</span></td>'+
+        '    </tr>'+
+        '    <tr>'+
+        '        <td class="title-column">Status:</td>'+
+        '        <td><span class="device-status"></span></td>'+
+        '    </tr>'+
+        '    <tr>'+
+        '        <td class="title-column">Channel State:</td>'+
+         '       <td><span class="channel-state"></span></td>'+
+        '    </tr>'+
+        '    <tr>'+
+        '        <td class="title-column">Temperature:</td>'+
+        '        <td><span class="device-temperature Numericview"></span></td>'+
+        '    </tr>'+
+        '    <tr>'+
+        '        <td class="title-column">Maximum temperature:</td>'+
+        '		<td>'+
+        ' <form>'+
+        '  <input name="n" class="maxv Numericview" type="number" min="-100" max="100" step="1" value="22">'+
+        ' <input type="button" class="sendtemp maxtemp" value="Set">'+
+        '</form>'+
+        '			</td>'+
+        '   </tr>'+
+        '   <tr>'+
+        '            <td class="title-column">Minimum temperature:</td>'+
+        '			'+
+        '			<td>'+
+        '<form>'+
+        '    <input name="n" class="minv Numericview" type="number" min="-100" max="100" step="1" value="5">'+
+        '   <input type="button" class="sendtemp mintemp" value="Set">'+
+        ' </form>'+
+        '				</td>'+
+        '   </tr>'+
+        '    <tr>'+
+        '        <td class="title-column">Fan State:</td>'+
+        '        <td><div class="device-FAN-state"></div></td>'+
+        '    </tr>'+
+        '   <tr>'+
+        '               <td class="title-column">Fan Control:</td>'+
+        '		                <td>'+
+        /*'               <a class="button send on" href="javascript:void(0)">On</a>'+
+        '              <a class="button send off" href="javascript:void(0)">Off</a>'+*/
+        /*'       	  <div class="toggler-wrapper">'+
+        '   		<p>OFF</p>'+
+        '        <div class="toggler-outer">'+
+        '            <div class="toggler min">'+
+        '            </div>    '+
+        '                          '+
+        '        </div>'+
+         '       <p>ON</p>'+
+         '   </div>'+*/
+        '<div class="pwr-bg">'+
+        '<div class="pwr-btn on">'+
+        '</div>'+
+        '</div>'+
+        '         </td>'+
+		'   </tr>	'+
+        '</table>'+
+        ' </div>'+
+        '<div class="device-temperature-graph">'+
+		'<canvas id="graph" width="600" height="300"></canvas>'+
+        '</div>';/*,animate:false,boxid:'info',width:750,height:450,top:5});*/
+}
+
         $(document).ready(function () {
-            var deviceHive = new DeviceHive("http://nn6156.pg.devicehive.com/api", "admin", "");
-            app.start(deviceHive, "9f33566e-1f8f-11e2-8979-c42c030dd6a5");
-        });
+        var usId = sessionStorage.getItem("usId");
+        var cred = sessionStorage.getItem("cred");
+        var currapp = null;
+        
+        
+        
+        
+        //app.start(deviceHive, "9f33566e-1f8f-11e2-8979-c42c030dd6a5");
+       
+            var tab_devicelist = $('#Devicelist').dataTable({"columns": [
+            {
+                "class":          'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": '',
+                "sWidth":'20px'
+            },{"sWidth":'20%'},{"sWidth":'30%'},null,null,null],
+            });
+            
+        //login
+            if ((usId==null || usId==0 || cred==null || cred==0 ) ){
+            $('.container').hide();
+            $('.login-form' ).show();
+            return ;
+        }
+        
+        $('.login-form' ).hide();
+        $('body' ).removeClass("scr_bg");
+        
+        var deviceHive = new DeviceHive("http://nn6156.pg.devicehive.com/api", usId, cred);
+
+        //endof login
+            
+        // update devices
+        deviceHive.getDevices().done(function (data) {
+            jQuery.each(data, function (index, name) {
+                    tab_devicelist.api().row.add( ['',
+                    name.name,
+                    name.id,
+                    name.status,
+                    name.deviceClass.name,
+                    name.network.name
+                    ] ).draw();
+                    
+                });
+            })
+            .fail(this.handleErrore);
+
+        handleErrore = function (e, xhr) {alert(e);}
+       if (tab_devicelist.api().column( 0 ).data().length <= 0)
+        $('.relogin-form' ).show();
+        //////
+        // Add event listener for opening and closing details
+        $('#Devicelist tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = tab_devicelist.api().row(tr);
+
+    //format(row.data());
+       
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child('');
+            row.child.hide();
+            tr.removeClass('shown'); 
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tab_devicelist.api().row($('.shown')).child(' ').hide(); $('.shown').removeClass('shown');
+            tr.addClass('shown');
+           
+            currapp = app.start(deviceHive, row.data()[2]);
+            app.updateGraph(row.data()[2]);
+        }
+        
+    } );
+            
+           
+    });
      </script>
 </head>
-<body>
+<body class="scr_bg">
     
     <div class="container">
-    <div class="device-info-holder">
-        <h4>Device information:</h4>
-        <table class="fields-table">
-            <tr>
-                <td class="title-column">Name:</td>
-                <td><span class="device-name"></span></td>
-            </tr>
-            <tr>
-                <td class="title-column">Status:</td>
-                <td><span class="device-status"></span></td>
-            </tr>
-            <tr>
-                <td class="title-column">Channel State:</td>
-                <td><span class="channel-state"></span></td>
-            </tr>
-            <tr>
-                <td class="title-column">Temperature:</td>
-                <td><span class="device-temperature"></span></td>
-            </tr>
-            <tr>
-                <td class="title-column">Fan State:</td>
-                <td><div class="device-FAN-state"></div></td>
-            </tr>
-            <tr>
-                <td class="title-column">Maximum temperature:</td>
-				
-				<td>
-  <form>
-    <input name="n" class="maxv" type="number" min="0" max="50" step="1" value="22">
-    <input type="button" class="sendtemp maxtemp" value="Set">
-  </form>
-				</td>
-				
-            </tr>
-			<tr>
-                <td class="title-column">Minimum temperature:</td>
-				
-				<td>
-  <form>
-    <input name="n" class="minv" type="number" min="-100" max="100" step="1" value="5">
-    <input type="button" class="sendtemp mintemp" value="Set">
-  </form>
-				</td>
-			</tr>
-			<tr>
-                <td class="title-column">Fan Control:</td>
-			                <td>
-                    <a class="button send on" href="javascript:void(0)">On</a>
-                    <a class="button send off" href="javascript:void(0)">Off</a>
-                </td>
-			</tr>	
-        </table>
-    </div>
+
+    
+    <table cellpadding="0" cellspacing="0" border="0" class="display" id="Devicelist">
+	<thead>
+		<tr>
+            <th></th>
+			<th>Device name</th>
+			<th>ID</th>
+			<th>Status</th>
+			<th>Class</th>
+			<th>Network</th>
+		</tr>
+	</thead>
+	<tbody>
+
+        </tbody>
+	<tfoot>
+		<tr><th></th>
+			<th>Device name</th>
+			<th>ID</th>
+			<th>Status</th>
+			<th>Class</th>
+			<th>Network</th>
+		</tr>
+	</tfoot>
+</table>
+
 
     </div>
+    <div class="login-form" style="display: none;">
+
+	<h1>Login:</h1>
+
+	<form METHOD="POST" action="#">
+
+		<input type="text" id="usern" name="username" placeholder="username">
+		
+		<input type="password" id="passw" name="password" placeholder="password">
+		
+		<input class="login-submit" type="button" value="log in">
+
+	</form>
+
+</div>
+<div class="relogin-form" style="display: none;">
+
+	<h1>ReLogin:</h1>
+
+	<form METHOD="POST" action="#">
+		<input class="login-submit" type="button" value="Change user credentials">
+	</form>
+
+</div>
+
 </body>
 </html>

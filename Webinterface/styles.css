@@ -4,10 +4,52 @@ table { border-collapse: collapse; }
 table td { padding: 6px; }
 table td.title-column { width: 130px; }
 .container { margin: auto; height: auto; overflow: hidden; }
-.device-info-holder { padding: 20px 2%; }
+.device-info-holder { padding: 20px 2%; width: 300px; float: left}
 .device-FAN-state { width: 32px; height: 32px; }
 .device-FAN-state.on { background-image:url(images/UX_fan_32_on.png); }
 .device-FAN-state.off { background-image:url(images/UX_fan_32_off.png); }
 .device-temperature { font-size: 1.1em; font-weight: bold; color: #004444; }
 .device-temperature.big { color: #dd4444; }
 .button { margin: 0px 2px; color: white; border-radius: 3px; padding: 6px 16px 8px; text-decoration: none; background-color: green; }
+.device-temperature-graph { padding: 100px 50px; }
+
+#Devicelist {
+	font: 80%/1.45em "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #333;
+	background-color: #fff;
+}
+
+td.details-control {
+    background: url('images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('images/details_close.png') no-repeat center center;
+}
+.login-form{margin: 180px auto;}
+
+.scr_bg {
+    background-image: url("images/bg.png");	
+}
+
+.Numericview {
+    margin: 0px 0px 0 0px;
+	position:relative;
+	float:left;
+	font-family: "DS-DIGIB", Arial, Helvetica, sans-serif;
+	text-align: left; 
+    width:70px;
+	font-size: 26px;
+	font-weight: 400;
+	background: none;
+	letter-spacing:1.8px;
+	z-index:15;
+	
+}
+
+@font-face {
+  font-family: 'DS-DIGIB';
+  src: url('css/fonts/DS-DIGIB.TTF') format('truetype');
+}

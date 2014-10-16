@@ -1,0 +1,229 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+html {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+
+
+.bg {
+    background-image: url("../images/bg.jpg");
+    height: 300px;
+    margin: 50px auto;
+    width: 400px;
+	border-radius:8px;
+	-o-border-radius:8px;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	
+}
+.device-bg {
+    background: url("../images/sprites.png") repeat scroll -68px -6px transparent;
+    height: 155px;
+    left: 45px;
+    position: relative;
+    top: 73px;
+    width: 315px;
+}
+
+
+.screen-bg {
+    border: medium none;
+    height: 64px;
+    top:20px;
+    margin: 0 13px 13px 0;
+    position: relative;
+    left: 25px;
+    width: 191px;
+	z-index:10;
+}
+
+.screen-bg.min {
+    background: url("../images/sprites.png") repeat scroll -71px -304px transparent;
+}
+
+.screen-bg.min.dim {opacity:0.4; filter:alpha(opacity=0); /* For IE8 and earlier */ }
+	
+.screen-bg.min.bright {opacity:1.0; filter:alpha(opacity=100); /* For IE8 and earlier */  }
+	
+.screen-bg.hrs {
+    background: url("../images/sprites.png") repeat scroll -71px -223px transparent;
+}
+
+.screen-bg.hrs.dim {opacity:0.4; filter:alpha(opacity=0); /* For IE8 and earlier */ }
+	
+.screen-bg.hrs.bright {opacity:1.0; filter:alpha(opacity=100); /* For IE8 and earlier */  }
+
+.arrow-bg {
+    background: url("../images/sprites.png") repeat scroll -279px -224px transparent;
+    height: 29px;
+    left: 235px;
+    position: relative;
+    top: -58px;
+    width: 56px;
+}
+
+#arrows {
+    height: 26px;
+    left: 4px;
+    position: relative;
+    top: 3px;
+    width: 50px;
+	padding:0;
+	white-space:nowrap;
+	list-style-type:none;
+}
+
+#arrows ul{
+  	display:inline;
+}
+
+.up.on {
+    background: url("../images/sprites.png") repeat scroll -8px -8px transparent;
+    height: 26px;
+    width: 25px;
+	cursor:pointer;
+	float:left;
+	}
+
+.up.on:hover {
+    background: url("../images/sprites.png") repeat scroll -8px -37px transparent;
+  	}
+
+.up.on:active {
+    background: url("../images/sprites.png") repeat scroll -8px -68px transparent;
+  	}
+
+.up.off {opacity:0.4; filter:alpha(opacity=40); /* For IE8 and earlier */  }
+	
+.down.on {
+    background: url("../images/sprites.png") repeat scroll -33px -8px transparent;
+    height: 26px;
+    width: 25px;
+	cursor:pointer;
+	float:left;
+	opacity:1.0; filter:alpha(opacity=100); /* For IE8 and earlier */ 
+	}
+
+.down.on:hover {
+    background: url("../images/sprites.png") repeat scroll -33px -37px transparent;
+  	}
+
+.down.off {opacity:0.4; filter:alpha(opacity=40); /* For IE8 and earlier */  }
+
+.down.on:active {
+    background: url("../images/sprites.png") repeat scroll -33px -68px transparent;
+  	}
+	
+.pwr-bg {
+    background: url("../images/sprites.png") repeat scroll -279px -224px transparent;
+    height: 29px;
+    left: 10px;
+    position: relative;
+    top: 5px;
+    width: 56px;
+	padding: 3px 0 0 4px;
+}
+
+.pwr-btn.on {
+    background: url("../images/sprites.png") repeat scroll -8px -102px transparent;
+    height: 26px;    
+    width: 50px;
+	cursor:pointer;
+}
+
+.pwr-btn.on:hover {
+    background: url("../images/sprites.png") repeat scroll -8px -132px transparent;}
+
+.pwr-btn.on:active {
+    background: url("../images/sprites.png") repeat scroll -8px -162px transparent;}
+
+.pwr-btn.off {
+    background: url("../images/sprites.png") repeat scroll -8px -192px transparent;
+    cursor:pointer;
+	 height: 26px;    
+    width: 50px;
+}
+
+.pwr-btn.off:hover {
+    background: url("../images/sprites.png") repeat scroll -8px -222px transparent;}
+
+.pwr-btn.off:active {
+    background: url("../images/sprites.png") repeat scroll -8px -252px transparent;}
+
+#slider-range-min {
+    float: left;
+    height: 20px;
+    left: 51px;
+    position: relative;
+    top: -37px;
+    width: 170px;
+}
+
+#amount {
+    border: none;
+    height: 36px;
+    margin: 13px 5px 0 65px;
+	position:relative;
+	float:left;
+	left:3px;
+    width: 83px;
+	color:#fff;
+	font-family: "DS-DIGIB", Arial, Helvetica, sans-serif;
+	text-align: right;
+	border: 0; 
+	font-size: 38px;
+	font-weight: 400;
+	background: none;
+	letter-spacing:1.8px;
+	z-index:15;
+	
+}
+
+@font-face {
+  font-family: 'DS-DIGIB';
+  src: url('fonts/DS-DIGIB.TTF') format('truetype');
+}
+
+.toggler-wrapper {
+    float: left;
+    left: 10px;
+    position: relative;
+    top: 5px;
+    
+}
+.toggler-wrapper p {
+    float: left;
+    width: 15px;
+	color:#000000;
+}
+
+.toggler-outer {
+    width: 30px;
+    height: 17px;
+    overflow: hidden;
+	margin:0 5px 0 15px;
+	float: left;
+	border-radius:9px;
+	-o-border-radius:9px;
+	-moz-border-radius:9px;
+	-webkit-border-radius:9px;
+}
+
+.toggler {
+    width: 43px;
+    height: 17px;
+	cursor:pointer;
+	
+}
+
+.toggler.min {
+	 background: url('../images/sprites.png') -73px -168px;
+}
+
+.toggler.hrs {
+	 background: url('../images/sprites.png') -113px -168px;
+}

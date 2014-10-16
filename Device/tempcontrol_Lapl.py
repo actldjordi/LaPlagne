@@ -51,7 +51,7 @@ import shelve
 
 
 # change it to match your address for 1-wire sensor
-_W1_FILENAME='/sys/bus/w1/devices/28-00000393268a/w1_slave'
+_W1_FILENAME=get_i2c_file()
 if not os.path.exists(_W1_FILENAME) :
     _W1_FILENAME = '/dev/null'
 
@@ -59,6 +59,8 @@ if not os.path.exists(_W1_FILENAME) :
 _LED_PIN = 12
 _FAN_PIN = 12
 _HEAT_PIN = 11
+_DeviceID='9f33566e-1f8f-11e2-8979-c42c030dd6b3'
+_DeviceNAME='device3'
 
 # API URL (register for free playground at http://beta2.devicehive.com/playground
 _API_URL = 'http://nn6156.pg.devicehive.com/api'
@@ -67,7 +69,7 @@ gsettings = shelve.open('tempsettings')
 if not gsettings.has_key('maxtemp') :
    gsettings['maxtemp'] = 29
 if not gsettings.has_key('mintemp') :
-   gsettings['mintemp'] = 19
+   gsettings['mintemp'] = 9
 
 
 class RasPiConfig(object):
@@ -79,7 +81,7 @@ class RasPiConfig(object):
 
     @property
     def id(self):
-        return '9f33566e-1f8f-11e2-8979-c42c030dd6a5'
+        return _DeviceID
     
     @property
     def key(self):
@@ -87,7 +89,7 @@ class RasPiConfig(object):
     
     @property
     def name(self):
-        return 'Device1'
+        return _DeviceNAME
     
     @property
     def status(self):
@@ -148,13 +150,14 @@ class RasPiApp(object):
         log.msg('on_apimeta')
     
     def on_connected(self):
+        log.msg('Connected to devicehive server.')
+        self.connected = True
+        
         lc = task.LoopingCall(self.sensor.get_temp, self)
         lc.start(1)
         
-        log.msg('Connected to devicehive server.')
-        self.connected = True
         for onotif in self.notifs :
-            self.factory.notify(onotif['notification'], onotif['parameters'], device_id = self.info.id, device_key = self.info.key)
+            self.factory.notify(onotif['notification'], onotif['parameters'],device_id=self.info.id, device_key = self.info.key)
         self.notifs = []
         def on_subscribe(result) :
             self.factory.subscribe(self.info.id, self.info.key)
@@ -164,13 +167,16 @@ class RasPiApp(object):
     
     def on_connection_failed(self, reason) :
         print('# BILL on_connection_failed')
+        pass
         
     
     def on_closing_connection(self):
         print('# BILL on_closing_connection(')
+        pass
     
     def on_failure(self, device_id, reason):
         print('# BILL on_failure')
+        pass
     
     def do_short_command(self, finished, equipment = None, state = 0):
         log.msg('Setting {0} equipment to {1}'.format(equipment, state))
@@ -184,15 +190,15 @@ class RasPiApp(object):
                 print('BILL LED ON')
 				
         if equipment == 'MINTEMP' :
-                #self.led.set_off()
                 self.sensor.set_min_temp(state)
-                print('BILL MINTEMP')
+                print('- - - BILL MINTEMP')
                 
 				
         if equipment == 'MAXTEMP' :
                 self.sensor.set_max_temp(state)
-                print('BILL MAXTEMP')
-				
+                print('- - - BILL MAXTEMP')
+
+        gsettings.sync()        
         # upon completion post the result back
         self.factory.notify('equipment', {'state': state, 'equipment': equipment }, device_id = self.info.id, device_key = self.info.key)
         finished.callback(devicehive.CommandResult('Completed'))
@@ -228,43 +234,57 @@ class TempSensor(object):
     def __init__(self, file_name,relays):
         self.file_name = file_name
         self.relays = relays
-        self.last_temp = 1
-        self.last_good_temp = 0
+        self.last_temp = self._get_temp()
+        self.last_good_temp = self.last_temp
         #gsettings = shelve.open('tempsettings')
     
     # internal, get temperature readings from device and check CRC
-    def _get_temp(self):
+    def _get_temp9(self):
         self.last_good_temp = self.last_good_temp + 0.2;
-        print(gsettings['mintemp']+'-'+gsettings['maxtemp'])
+        print(str(gsettings['mintemp'])+'-'+str(gsettings['maxtemp']))
         return self.last_good_temp
 
+    def _get_temp(self):
+        """
+        internal, get temperature readings from device and check CRC
+        """
+        with open(self.file_name) as f:
+            content = f.readlines()
+            for line in content:
+                # sometimes CRC is bad, so we will return last known good temp
+                if line.find('crc=')>=0 and line.find('NO')>=0:
+                    return self.last_good_temp
+                p = line.find('t=')
+                if p >= 0:
+                    self.last_good_temp = float(line[p+2:])/1000.0
+                    return self.last_good_temp
+        return 0.0
 
     def get_temp(self, dev):
         """
         check temperature, if greater than threshold, notify
         """
         temp = self._get_temp()
-        if abs(temp - self.last_temp) > 5.2:
+        if abs(temp - self.last_temp) > 1.0:
             log.msg('Temperature {0} -> {1}'.format(self.last_temp, temp))
             dev.notify('equipment', temperature = temp, equipment = "temp")
             self.last_temp = temp
             
-            if (temp > int(gsettings['maxtemp'])):
-                #do the above maxtempthing	
-                print('Maximum temperature reached temp = '+str(temp)+'>'+str(gsettings['maxtemp']))
-                self.relays.HighTemp_mode()
-                self.last_good_temp = 1 # Bill to be deleted just for test purpose
+        if (temp > int(gsettings['maxtemp'])):
+            #do the above maxtempthing	
+            print('Maximum temperature reached temp = '+str(temp)+'>'+str(gsettings['maxtemp']))
+            self.relays.HighTemp_mode()
+        else:
+            if (temp < int(gsettings['mintemp'])):
+                #do the under mintempthing	
+                print('Minimum temperature reached temp = '+str(temp)+'<'+str(gsettings['mintemp']))
+                self.relays.LowTemp_mode()
             else:
-                if (temp < int(gsettings['mintemp'])):
+                if abs(temp - ((int(gsettings['maxtemp'])+int(gsettings['mintemp']))/2)) < 3:
                     #do the under mintempthing	
-                    print('Minimum temperature reached temp = '+str(temp)+'<'+str(gsettings['mintemp']))
-                    self.relays.LowTemp_mode()
-                else:
-                    if abs(temp - ((int(gsettings['maxtemp'])+int(gsettings['mintemp']))/2)) < 3:
-                        #do the under mintempthing	
-                        print('Normal temperature : '+str(gsettings['mintemp'])+'<'+str(temp)+'<'+str(gsettings['maxtemp']))
-                        self.relays.NormalTemp_mode()					
-			
+                    print('Normal temperature : '+str(gsettings['mintemp'])+'<'+str(temp)+'<'+str(gsettings['maxtemp']))
+                    self.relays.NormalTemp_mode()					
+
     # set minimum temperature
     def set_min_temp(self, s_mintemp):
         gsettings['mintemp'] = s_mintemp

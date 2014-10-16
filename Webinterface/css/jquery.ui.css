@@ -1,0 +1,20 @@
+
+/* Interaction Cues
+----------------------------------*/
+
+.ui-slider { position: relative; text-align: left; }
+.ui-slider .ui-slider-handle {position: absolute; z-index: 2;  cursor: pointer;  height: 13px; margin-left: -6px; top: -3px; width: 12px;}
+.ui-slider .ui-slider-range { position: absolute; z-index: 1;}
+
+.ui-slider-horizontal { height: 15px;}
+.ui-slider-horizontal .ui-slider-range { top: 2px; margin-left:2px; height: 5px;  background-color: #9AD3DF; border-radius:9px; -o-border-radius:9px;	-moz-border-radius:9px; -webkit-border-radius:9px;}
+
+/* Component containers
+----------------------------------*/
+
+.ui-widget-content {  background: url("../images/sprites.png") repeat scroll -71px -191px transparent; border:none;}
+
+/* Interaction states
+----------------------------------*/
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { background: url("../images/sprites.png") repeat scroll -162px -169px transparent; border:none; border-radius:9px; -o-border-radius:9px;	-moz-border-radius:9px; -webkit-border-radius:9px;}
