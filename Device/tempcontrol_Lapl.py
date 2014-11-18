@@ -67,7 +67,7 @@ _API_URL = 'http://nn6156.pg.devicehive.com/api'
 
 gsettings = shelve.open('tempsettings')
 if not gsettings.has_key('maxtemp') :
-   gsettings['maxtemp'] = 29
+   gsettings['maxtemp'] = 15
 if not gsettings.has_key('mintemp') :
    gsettings['mintemp'] = 9
 
